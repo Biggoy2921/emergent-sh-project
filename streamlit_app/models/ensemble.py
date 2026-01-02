@@ -28,7 +28,12 @@ class EnsembleClassifier:
         # Load preprocessor
         preprocessor_path = os.path.join(self.model_dir, 'preprocessor.pkl')
         if os.path.exists(preprocessor_path):
-            self.preprocessor = joblib.load(preprocessor_path)
+            preprocessor_data = joblib.load(preprocessor_path)
+            # Handle both old and new preprocessor formats
+            if isinstance(preprocessor_data, dict):
+                self.preprocessor = preprocessor_data['scaler']
+            else:
+                self.preprocessor = preprocessor_data
             print("  ✓ Preprocessor loaded")
         else:
             raise FileNotFoundError(f"Preprocessor not found: {preprocessor_path}")
